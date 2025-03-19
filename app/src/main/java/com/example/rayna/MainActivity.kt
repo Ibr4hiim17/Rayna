@@ -1,55 +1,107 @@
-package com.example.rayna
+package com.example.reviewapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.rayna.ui.theme.RaynaTheme
-import com.example.rayna.view.MainScreen
-import com.example.rayna.viewmodel.LocationViewModel
-import com.example.rayna.viewmodel.ProductViewModel
+import androidx.compose.ui.unit.sp
+import com.example.rayna.R
+import com.example.reviewapp.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            RaynaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val productViewModel = viewModel<ProductViewModel>()
-                    val locationViewModel = viewModel<LocationViewModel>()
+            ReviewAppUI()
+        }
+    }
+}
 
+@Composable
+fun ReviewAppUI() {
+    Column(
+        modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5DC))
+    ) {
+        SearchBar()
+        CategoryButtons()
+        TopReviews()
+    }
+}
 
-                    MainScreen(
-                        productViewModel,
-                        locationViewModel,
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+@Composable
+fun SearchBar() {
+    TextField(
+        value = "",
+        onValueChange = {},
+        placeholder = { Text("Shops, Products, Services, etc") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_search),
+                contentDescription = "Search"
+            )
+        }
+    )
+}
+
+@Composable
+fun CategoryButtons() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        Button(onClick = {}) { Text("Shop") }
+        Button(onClick = {}) { Text("Product") }
+        Button(onClick = {}) { Text("Service") }
+    }
+}
+
+@Composable
+fun TopReviews() {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Top Reviews", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        ReviewItem("Milkshake", "A creamy milkshake drink.", R.drawable.milkshake)
+        ReviewItem("Family Restaurant", "A cozy place for family dining.", R.drawable.restaurant)
+    }
+}
+
+@Composable
+fun ReviewItem(title: String, description: String, image: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Fix for elevation
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = title,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(title, fontWeight = FontWeight.Bold)
+                Text(description, fontSize = 14.sp, color = Color.Gray)
             }
         }
     }
